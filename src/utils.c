@@ -1,58 +1,38 @@
 #include <philo.h>
 
-int	ft_isdigit(int c)
+void	exit_philo(t_table *tab, pthread_t *thread_id)
 {
-	return (c >= '0' && c <= '9');
+	int	i;
+
+	i = -1;
+	while (++i < tab->philos_num)
+		pthread_join(thread_id[i], NULL);
+	i = -1;
+	while (++i < tab->philos_num)
+		pthread_mutex_destroy(&tab->philos[i].fork);
+	pthread_mutex_destroy(&tab->print);
+	pthread_mutex_destroy(&tab->check);
+	free(tab->philos);
+	free(thread_id);
 }
 
-size_t	ft_strlen(const char *s)
+size_t	get_time(void)
 {
-	size_t	cnt;
+	struct timeval	t;
 
-	cnt = 0;
-	while (s[cnt])
-		cnt++;
-	return (cnt);
+	gettimeofday(&t, NULL);
+	return ((t.tv_sec * 1000) + (t.tv_usec / 1000));
 }
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
+void	ft_wait(t_table *tab, size_t time_to_die)
 {
-	size_t	i;
+	size_t	t;
 
-	i = 0;
-	while (s1[i] && s2[i] && s1[i] == s2[i] && i < n)
-		i++;
-	if (i < n)
-		return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-	else
-		return (0);
-}
-
-int	ft_atoi(const char *str)
-{
-	short			sign;
-	unsigned char	digit;
-	unsigned long	result;
-
-	result = 0;
-	sign = 1;
-	while (*str == ' ' || *str == '\n' || *str == '\t'
-		|| *str == '\f' || *str == '\v' || *str == '\r')
-		str++;
-	if (*str == '-' && str++)
-		sign = -1;
-	else if (*str == '+')
-		str++;
-	while (1)
+	t = get_time();
+	while (!(tab->dead))
 	{
-		digit = *str++ - '0';
-		if (digit > 9)
+		if (get_time() - t >= time_to_die)
 			break ;
-		result = result * 10 + digit;
-		if (result > 2147483647 && sign == 1)
-			return (-1);
-		if (result > 2147483648 && sign == -1)
-			return (0);
+		usleep(100);
 	}
-	return (result * sign);
 }

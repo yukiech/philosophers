@@ -52,7 +52,7 @@ int		handle_args(int argc, char *argv[], t_table *tab);
 void		print_msg(t_philo *philo, int msg);
 void		*philo_life(void *arg);
 void		check_dead(t_table *tab);
-void		exit_philo(t_table *tab, pthread_t *tid);
+void		exit_philo(t_table *tab, pthread_t *thread_id);
 size_t		get_time(void);
 void		ft_wait(t_table *tab, size_t t_slp);
 

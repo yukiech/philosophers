@@ -39,7 +39,7 @@ INC_FOLDER = inc
 SRC_FILES =	main.c \
 		args_check.c \
 		utils.c	\
-		utils2.c \
+		minilibft.c \
 		message.c \
 		thread_execute.c
 
